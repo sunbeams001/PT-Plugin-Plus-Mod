@@ -1462,7 +1462,7 @@ function getSiteRank(site_url) {
                 'privilege': ''
             };
             break;
-        case 'pt.m-team.cc' :
+        case 'kp.m-team.cc' :
             rank[0] = {
                 'name': 'Power User',
                 'time': 4 * 7 * 86400,
