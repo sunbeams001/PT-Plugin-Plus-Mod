@@ -2518,56 +2518,56 @@ function getSiteRank(site_url) {
             rank[0] = {
                 'name': 'Power User',
                 'time': 4 * 7 * 86400,
-                'download': size2Bytes('200 GiB'),
+                'download': size2Bytes('512 GiB'),
                 'ratio': 1.05,
                 'privilege': '可以直接发布种子；可以查看NFO文档；可以查看用户列表；可以请求续种； 可以发送邀请； 可以查看排行榜；可以查看其它用户的种子历史(如果用户隐私等级未设置为"强")； 可以删除自己上传的字幕'
             };
             rank[1] = {
                 'name': 'Elite User',
                 'time': 8 * 7 * 86400,
-                'download': size2Bytes('480 GiB'),
+                'download': size2Bytes('1024 GiB'),
                 'ratio': 1.55,
                 'privilege': '<span style="color:green">封存账号后不会被删除</span>'
             };
             rank[2] = {
                 'name': 'Crazy User',
                 'time': 15 * 7 * 86400,
-                'download': size2Bytes('1200 GiB'),
+                'download': size2Bytes('2048 GiB'),
                 'ratio': 2.05,
                 'privilege': '可以在做种/下载/发布的时候选择匿名模式'
             };
             rank[3] = {
                 'name': 'Insane User',
                 'time': 25 * 7 * 86400,
-                'download': size2Bytes('2000 GiB'),
+                'download': size2Bytes('4096 GiB'),
                 'ratio': 2.55,
                 'privilege': '可以查看普通日志'
             };
             rank[4] = {
                 'name': 'Veteran User',
                 'time': 40 * 7 * 86400,
-                'download': size2Bytes('3000 GiB'),
+                'download': size2Bytes('8192 GiB'),
                 'ratio': 3.05,
                 'privilege': '可以查看其它用户的评论、帖子历史；<span style="color:green">永远保留账号</span>'
             };
             rank[5] = {
                 'name': 'Extreme User',
                 'time': 60 * 7 * 86400,
-                'download': size2Bytes('5000 GiB'),
+                'download': size2Bytes('16384 GiB'),
                 'ratio': 3.55,
                 'privilege': '可以更新过期的外部信息；可以查看Extreme User论坛'
             };
             rank[6] = {
                 'name': 'Ultimate User',
                 'time': 80 * 7 * 86400,
-                'download': size2Bytes('8000 GiB'),
+                'download': size2Bytes('35000 GiB'),
                 'ratio': 4.05,
                 'privilege': ''
             };
             rank[7] = {
                 'name': 'Nexus Master',
                 'time': 100 * 7 * 86400,
-                'download': size2Bytes('15000 GiB'),
+                'download': size2Bytes('70000 GiB'),
                 'ratio': 4.55,
                 'privilege': ''
             };
