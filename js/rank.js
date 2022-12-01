@@ -747,6 +747,36 @@ function renderRank() {
 
         }
 
+        if (parseUrl(site_url).host.replace(/www\./, '') === 'wintersakura.net') {
+            //处理冬樱的做种积分  wsn_bonus1 是魔力值  wsn_bonus2 是做种积分
+            if (localStorage.getItem('wsn_bonus1') === null || localStorage.getItem('wsn_bonus2') === null || (localStorage.getItem('wsn_bonus1') != bonus)) {
+                localStorage.setItem('wsn_bonus1', bonus);
+                $.ajax({
+                    url: 'https://wintersakura.net/index.php',
+                    async: false,
+                    success: function (res) {
+                        if (res.indexOf('userdetails.php?id=') !== -1) {
+                            // 有用户页表示获取成功
+                            if (res.indexOf('做种积分</font>: ') !== -1) {
+                                var wsn_bonus2 = res.split('做种积分</font>: ');
+                                if (typeof wsn_bonus2[1] !== 'undefined') {
+                                    wsn_bonus2 = wsn_bonus2[1].split(' ')[0].replace(/,/g, '').replace(/[\r\n]/g, "").replace(/\ +/g, "");
+                                    if (!isNaN(wsn_bonus2)) {
+                                        localStorage.setItem('wsn_bonus2', wsn_bonus2);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            var wsn_bonus2 = parseInt(localStorage.getItem('wsn_bonus2'));
+
+            if (wsn_bonus2 > 0) {
+                item.children().eq(7).append('<br><span>' + number_format(wsn_bonus2) + '</span>');
+            }
+        }
 
         for (j = 0; j < site_rank.length; j++) {
             rank_flag = false;
@@ -793,6 +823,15 @@ function renderRank() {
                         }
                     } else {
                         vender_list('获取成就积分失败<br>', 1, item);
+                    }
+                }
+                if (typeof site_rank[j]['bonus4'] !== 'undefined') {
+                    if (parseInt(localStorage.getItem('wsn_bonus2')) > 0) {
+                        if (parseInt(localStorage.getItem('wsn_bonus2')) < site_rank[j]['bonus4']) {
+                            vender_list('升级还差' + (site_rank[j]['bonus4'] - parseInt(localStorage.getItem('wsn_bonus2'))) + '做种积分<br>', 1, item);
+                        }
+                    } else {
+                        vender_list('获取做种积分失败<br>', 1, item);
                     }
                 }
                 if (rank_flag) {
@@ -853,6 +892,18 @@ function renderRank() {
                         vender_list('获取做种积分失败<br>', 1, item);
                     }
                 }
+                if (typeof site_rank[j]['bonus4'] !== 'undefined') {
+                    if (parseInt(localStorage.getItem('wsn_bonus2')) > 0) {
+                        if (parseInt(localStorage.getItem('wsn_bonus2')) < site_rank[j]['bonus4']) {
+                            vender_list(site_rank[j]['bonus4'] + '做种积分', 3, item);
+                            vender_list('&nbsp;&nbsp;升级还差' + (site_rank[j]['bonus4'] - parseInt(localStorage.getItem('wsn_bonus2'))) + '做种积分<br>', 1, item);
+                        } else {
+                            vender_list(site_rank[j]['bonus4'] + '做种积分', 2, item);
+                        }
+                    } else {
+                        vender_list('获取做种积分失败<br>', 1, item);
+                    }
+                }
                 break;
             }
         }
@@ -907,6 +958,12 @@ function renderRank() {
                 mouseover_content += '做种积分' + site_rank[j]['bonus2'] + '&nbsp;/&nbsp;';
                 bonus = parseInt(localStorage.getItem('ssd_bonus2'));
                 need_bonus = site_rank[j]['bonus2'];
+            }
+
+            if (typeof site_rank[j]['bonus4'] !== 'undefined') {
+                mouseover_content += '做种积分' + site_rank[j]['bonus4'] + '&nbsp;/&nbsp;';
+                bonus = parseInt(localStorage.getItem('wsn_bonus2'));
+                need_bonus = site_rank[j]['bonus4'];
             }
 
             if (need_bonus > 0) {
@@ -4568,6 +4625,72 @@ function getSiteRank(site_url) {
                 'download': size2Bytes('3 TiB'),
                 'ratio': 4.55,
                 'privilege': ''
+            };
+            break;
+        case 'wintersakura.net' :
+            rank[0] = {
+                'name': 'Power User',
+                'time': 0,
+                'download': size2Bytes('50 GiB'),
+                'ratio': 1.00,
+                'bonus4': 50000,
+                'privilege': '可以查看NFO文档；可以请求续种； 可以购买/发送邀请；可以删除自己上传的字幕。可以申请友情链接；可以使用个性条。'
+            };
+            rank[1] = {
+                'name': 'Elite User',
+                'time': 0,
+                'download': size2Bytes('400 GiB'),
+                'ratio': 1.50,
+                'bonus4': 120000,
+                'privilege': '可以查看种子结构；可以更新外部信息',
+            };
+            rank[2] = {
+                'name': 'Crazy User',
+                'time': 0,
+                'download': size2Bytes('800 GiB'),
+                'ratio': 2.00,
+                'bonus4': 200000,
+                'privilege': '可以在做种/下载/发布的时候选择匿名模式。'
+            };
+            rank[3] = {
+                'name': 'Insane User',
+                'time': 0,
+                'download': size2Bytes('1.5 TiB'),
+                'ratio': 3.00,
+                'bonus4': 500000,
+                'privilege': '可以查看排行榜。'
+            };
+            rank[4] = {
+                'name': 'Veteran User',
+                'time': 0,
+                'download': size2Bytes('3 TiB'),
+                'ratio': 4.00,
+                'bonus4': 800000,
+                'privilege': '可以查看其它用户种子历史。（只有用户的隐私等级没有设为‘强’时才生效）'
+            };
+            rank[5] = {
+                'name': 'Extreme User',
+                'time': 0,
+                'download': size2Bytes('5 TiB'),
+                'ratio': 6.00,
+                'bonus4': 1400000,
+                'privilege': '可以更新过期的外部信息。Extreme User 及以上用户封存账号后不会被删除'
+            };
+            rank[6] = {
+                'name': 'Ultimate User',
+                'time': 0,
+                'download': size2Bytes('6 TiB'),
+                'ratio': 8.00,
+                'bonus4': 2000000,
+                'privilege': '首次到达此等级得到1个邀请名额。'
+            };
+            rank[7] = {
+                'name': 'Nexus Master',
+                'time': 0,
+                'download': size2Bytes('10 TiB'),
+                'ratio': 9.50,
+                'bonus4': 2800000,
+                'privilege': '首次到达此等级得到1个邀请名额Nexus Master及以上用户会永远保留账号。'
             };
             break;
 
