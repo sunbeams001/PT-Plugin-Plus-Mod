@@ -1453,6 +1453,12 @@ function getCheckInConfig(site_url) {
         case '1ptba.com' :
             url = 'https://1ptba.com/attendance.php';
             break;
+        case 'wintersakura.net' :
+            url = 'https://wintersakura.net/attendance.php';
+            break;
+        case 'hdvideo.one' :
+            url = 'https://hdvideo.one/attendance.php';
+            break;
     }
     return {url: url, callback: callback};
 }
