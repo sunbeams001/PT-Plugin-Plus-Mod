@@ -1455,6 +1455,9 @@ function getCheckInConfig(site_url) {
             break;
         case 'wintersakura.net' :
             url = 'https://wintersakura.net/attendance.php';
+            // callback = function (item2) {
+            //     window.open("https://wintersakura.net/attendance.php", "_blank");
+            // };
             break;
         case 'hdvideo.one' :
             url = 'https://hdvideo.one/attendance.php';
@@ -4805,7 +4808,7 @@ function getSiteConfig() {
                     'download': size2Bytes('5 TiB'),
                     'ratio': 6.00,
                     'bonus4': 1400000,
-                    'privilege': '可以更新过期的外部信息。Extreme User 及以上用户封存账号后不会被删除'
+                    'privilege': '可以更新过期的外部信息。<span style="color:green">封存账号后不会被删除</span>'
                 },
                 {
                     'name': 'Ultimate User',
@@ -4813,7 +4816,7 @@ function getSiteConfig() {
                     'download': size2Bytes('6 TiB'),
                     'ratio': 8.00,
                     'bonus4': 2000000,
-                    'privilege': '首次到达此等级得到1个邀请名额。'
+                    'privilege': ''
                 },
                 {
                     'name': 'Nexus Master',
@@ -4821,7 +4824,67 @@ function getSiteConfig() {
                     'download': size2Bytes('10 TiB'),
                     'ratio': 9.50,
                     'bonus4': 2800000,
-                    'privilege': '首次到达此等级得到1个邀请名额Nexus Master及以上用户会永远保留账号。'
+                    'privilege': '<span style="color:green">永远保留账号</span>'
+                },
+            ]
+        },
+        "hdvideo.one": {
+            ranks: [
+                {
+                    'name': 'Power User',
+                    'time': 4 * 7 * 86400,
+                    'download': size2Bytes('128 GiB'),
+                    'ratio': 2.00,
+                    'privilege': '可以直接发布种子；可以查看NFO文档；可以查看用户列表；可以请求续种； 可以发送邀请； 可以查看排行榜；可以查看其它用户的种子历史(如果用户隐私等级未设置为"强")； 可以删除自己上传的字幕。'
+                },
+                {
+                    'name': 'Elite User',
+                    'time': 8 * 7 * 86400,
+                    'download': size2Bytes('256 GiB'),
+                    'ratio': 2.50,
+                    'privilege': '<span style="color:green">封存账号后不会被删除</span>'
+                },
+                {
+                    'name': 'Crazy User',
+                    'time': 12 * 7 * 86400,
+                    'download': size2Bytes('512 GiB'),
+                    'ratio': 3.00,
+                    'privilege': '可以在做种/下载/发布的时候选择匿名模式'
+                },
+                {
+                    'name': 'Insane User',
+                    'time': 18 * 7 * 86400,
+                    'download': size2Bytes('1 TiB'),
+                    'ratio': 3.50,
+                    'privilege': '可以查看普通日志'
+                },
+                {
+                    'name': 'Veteran User',
+                    'time': 24 * 7 * 86400,
+                    'download': size2Bytes('2 TiB'),
+                    'ratio': 4.00,
+                    'privilege': '可以查看其它用户的评论、帖子历史；<span style="color:green">永远保留账号</span>'
+                },
+                {
+                    'name': 'Extreme User',
+                    'time': 32 * 7 * 86400,
+                    'download': size2Bytes('4 TiB'),
+                    'ratio': 4.50,
+                    'privilege': '可以更新过期的外部信息；可以查看Extreme User论坛'
+                },
+                {
+                    'name': 'Ultimate User',
+                    'time': 40 * 7 * 86400,
+                    'download': size2Bytes('6 TiB'),
+                    'ratio': 5.00,
+                    'privilege': ''
+                },
+                {
+                    'name': 'Nexus Master',
+                    'time': 52 * 7 * 86400,
+                    'download': size2Bytes('8 TiB'),
+                    'ratio': 5.50,
+                    'privilege': ''
                 },
             ]
         }
