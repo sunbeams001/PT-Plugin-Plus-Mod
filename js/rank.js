@@ -816,6 +816,37 @@ function renderRank() {
             }
         }
 
+        if (parseUrl(site_url).host.replace(/www\./, '') === 'haidan.video') {
+            //处理海胆的等级积分  hdv_bonus1 是魔力值  hdv_bonus2 是等级积分
+            if (localStorage.getItem('hdv_bonus1') === null || localStorage.getItem('hdv_bonus2') === null || (localStorage.getItem('hdv_bonus1') != bonus)) {
+                localStorage.setItem('hdv_bonus1', bonus);
+                $.ajax({
+                    url: 'https://www.haidan.video/index.php',
+                    async: false,
+                    success: function (res) {
+                        if (res.indexOf('userdetails.php?id=') !== -1) {
+                            // 有用户页表示获取成功
+                            if (res.indexOf('等级积分: </font>') !== -1) {
+                                var hdv_bonus2 = res.split('等级积分: </font>\n</a>\n<span> ');
+                                if (typeof hdv_bonus2[1] !== 'undefined') {
+                                    hdv_bonus2 = hdv_bonus2[1].split(' ')[0].replace(/,/g, '').replace(/[\r\n]/g, "").replace(/\ +/g, "");
+                                    if (!isNaN(hdv_bonus2)) {
+                                        localStorage.setItem('hdv_bonus2', hdv_bonus2);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            var hdv_bonus2 = parseInt(localStorage.getItem('hdv_bonus2'));
+
+            if (hdv_bonus2 > 0) {
+                item.children().eq(7).append('<br><span>' + number_format(hdv_bonus2) + '</span>');
+            }
+        }
+
         for (j = 0; j < site_rank.length; j++) {
             rank_flag = false;
             //时间到了还没达到上传或者下载的
@@ -879,6 +910,17 @@ function renderRank() {
                         }
                     } else {
                         vender_list('获取成就积分失败<br>', 1, item);
+                    }
+                }
+                if (typeof site_rank[j]['bonus4'] !== 'undefined') {
+                    if (site_name === 'haidan.video') {
+                        if (parseInt(localStorage.getItem('hdv_bonus2')) > 0) {
+                            if (parseInt(localStorage.getItem('hdv_bonus2')) < site_rank[j]['bonus4']) {
+                                vender_list('升级还差' + (site_rank[j]['bonus4'] - parseInt(localStorage.getItem('hdv_bonus2'))) + '做种积分<br>', 1, item);
+                            }
+                        } else {
+                            vender_list('获取做种积分失败<br>', 1, item);
+                        }
                     }
                 }
                 if (rank_flag) {
@@ -963,6 +1005,20 @@ function renderRank() {
                         }
                     }
                 }
+                if (typeof site_rank[j]['bonus4'] !== 'undefined') {
+                    if (site_name === 'haidan.video') {
+                        if (parseInt(localStorage.getItem('hdv_bonus2')) > 0) {
+                            if (parseInt(localStorage.getItem('hdv_bonus2')) < site_rank[j]['bonus4']) {
+                                vender_list(site_rank[j]['bonus4'] + '做种积分', 3, item);
+                                vender_list('&nbsp;&nbsp;升级还差' + (site_rank[j]['bonus4'] - parseInt(localStorage.getItem('hdv_bonus2'))) + '做种积分<br>', 1, item);
+                            } else {
+                                vender_list(site_rank[j]['bonus4'] + '做种积分', 2, item);
+                            }
+                        } else {
+                            vender_list('获取做种积分失败<br>', 1, item);
+                        }
+                    }
+                }
                 break;
             }
         }
@@ -1023,6 +1079,14 @@ function renderRank() {
                     bonus = parseInt(localStorage.getItem('hvo_bonus2'));
                 }
                 need_bonus = site_rank[j]['bonus2'];
+            }
+
+            if (typeof site_rank[j]['bonus4'] !== 'undefined') {
+                mouseover_content += '等级积分' + site_rank[j]['bonus4'] + '&nbsp;/&nbsp;';
+                if (site_name === 'haidan.video') {
+                    bonus = parseInt(localStorage.getItem('hdv_bonus2'));
+                }
+                need_bonus = site_rank[j]['bonus4'];
             }
 
             if (need_bonus > 0) {
@@ -4963,6 +5027,7 @@ function getSiteConfig() {
                     'time': 2 * 7 * 86400,
                     'download': size2Bytes('0 GiB'),
                     'ratio': 1.00,
+                    'bonus4': 100,
                     'privilege': '允许购买邀请码，可以直接发布种子，可以删除自己上传的字幕。'
                 },
                 {
@@ -4970,6 +5035,7 @@ function getSiteConfig() {
                     'time': 4 * 7 * 86400,
                     'download': size2Bytes('0 GiB'),
                     'ratio': 1.00,
+                    'bonus4': 200,
                     'privilege': '允许发送邀请码'
                 },
                 {
@@ -4977,6 +5043,7 @@ function getSiteConfig() {
                     'time': 8 * 7 * 86400,
                     'download': size2Bytes('0 GiB'),
                     'ratio': 1.00,
+                    'bonus4': 500,
                     'privilege': '查看种子结构'
                 },
                 {
@@ -4984,6 +5051,7 @@ function getSiteConfig() {
                     'time': 16 * 7 * 86400,
                     'download': size2Bytes('0 GiB'),
                     'ratio': 1.00,
+                    'bonus4': 1000,
                     'privilege': '发布趣味盒'
                 },
                 {
@@ -4991,6 +5059,7 @@ function getSiteConfig() {
                     'time': 28 * 7 * 86400,
                     'download': size2Bytes('0 GiB'),
                     'ratio': 1.00,
+                    'bonus4': 2000,
                     'privilege': '<span style="color:green">永远保留账号</span>'
                 },
                 {
@@ -4998,6 +5067,7 @@ function getSiteConfig() {
                     'time': 32 * 7 * 86400,
                     'download': size2Bytes('0 GiB'),
                     'ratio': 1.00,
+                    'bonus4': 5000,
                     'privilege': '查看日志权限'
                 },
                 {
@@ -5005,6 +5075,7 @@ function getSiteConfig() {
                     'time': 40 * 7 * 86400,
                     'download': size2Bytes('0 GiB'),
                     'ratio': 1.00,
+                    'bonus4': 8000,
                     'privilege': '查看排行榜'
                 },
                 {
@@ -5012,6 +5083,7 @@ function getSiteConfig() {
                     'time': 52 * 7 * 86400,
                     'download': size2Bytes('0 GiB'),
                     'ratio': 1.00,
+                    'bonus4': 10000,
                     'privilege': '允许匿名，拥有发布主题推荐权限'
                 },
             ]
