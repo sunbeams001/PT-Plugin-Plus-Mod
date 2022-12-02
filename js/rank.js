@@ -511,10 +511,17 @@ function renderRank() {
         }
         var bonus = parseInt(bonus_item.text().replace(/,/g, ''));
 
-        var site_rank = getSiteRank(site_url);
+        var site_rank_config = getSiteRank(site_url);
+        if (site_rank_config === undefined || site_rank_config === {}) {
+            continue;
+        }
+        var site_name = site_rank_config.name;
+        var site_rank = site_rank_config.ranks;
         if (site_rank === []) {
             continue;
         }
+
+        // bonus2:做种积分 bonus3:成就积分 bonus4:等级积分
 
         if (parseUrl(site_url).host.replace(/www\./, '') === 'springsunday.net') {
             //处理春天的做种积分  ssd_bonus1 是魔力值  ssd_bonus2 是做种积分
@@ -778,6 +785,37 @@ function renderRank() {
             }
         }
 
+        if (parseUrl(site_url).host.replace(/www\./, '') === 'hdvideo.one') {
+            //处理HDVIDEO的做种积分  hvo_bonus1 是魔力值  hvo_bonus2 是做种积分
+            if (localStorage.getItem('hvo_bonus1') === null || localStorage.getItem('hvo_bonus2') === null || (localStorage.getItem('hvo_bonus1') != bonus)) {
+                localStorage.setItem('hvo_bonus1', bonus);
+                $.ajax({
+                    url: 'https://hdvideo.one/index.php',
+                    async: false,
+                    success: function (res) {
+                        if (res.indexOf('userdetails.php?id=') !== -1) {
+                            // 有用户页表示获取成功
+                            if (res.indexOf('做种积分</font>: ') !== -1) {
+                                var hvo_bonus2 = res.split('做种积分</font>: ');
+                                if (typeof hvo_bonus2[1] !== 'undefined') {
+                                    hvo_bonus2 = hvo_bonus2[1].split(' ')[0].replace(/,/g, '').replace(/[\r\n]/g, "").replace(/\ +/g, "");
+                                    if (!isNaN(hvo_bonus2)) {
+                                        localStorage.setItem('hvo_bonus2', hvo_bonus2);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            var hvo_bonus2 = parseInt(localStorage.getItem('hvo_bonus2'));
+
+            if (hvo_bonus2 > 0) {
+                item.children().eq(7).append('<br><span>' + number_format(hvo_bonus2) + '</span>');
+            }
+        }
+
         for (j = 0; j < site_rank.length; j++) {
             rank_flag = false;
             //时间到了还没达到上传或者下载的
@@ -808,12 +846,30 @@ function renderRank() {
                     }
                 }
                 if (typeof site_rank[j]['bonus2'] !== 'undefined') {
-                    if (parseInt(localStorage.getItem('ssd_bonus2')) > 0) {
-                        if (parseInt(localStorage.getItem('ssd_bonus2')) < site_rank[j]['bonus2']) {
-                            vender_list('升级还差' + (site_rank[j]['bonus2'] - parseInt(localStorage.getItem('ssd_bonus2'))) + '做种积分<br>', 1, item);
+                    if (site_name === 'springsunday.net') {
+                        if (parseInt(localStorage.getItem('ssd_bonus2')) > 0) {
+                            if (parseInt(localStorage.getItem('ssd_bonus2')) < site_rank[j]['bonus2']) {
+                                vender_list('升级还差' + (site_rank[j]['bonus2'] - parseInt(localStorage.getItem('ssd_bonus2'))) + '做种积分<br>', 1, item);
+                            }
+                        } else {
+                            vender_list('获取做种积分失败<br>', 1, item);
                         }
-                    } else {
-                        vender_list('获取做种积分失败<br>', 1, item);
+                    } else if (site_name === 'wintersakura.net') {
+                        if (parseInt(localStorage.getItem('wsn_bonus2')) > 0) {
+                            if (parseInt(localStorage.getItem('wsn_bonus2')) < site_rank[j]['bonus2']) {
+                                vender_list('升级还差' + (site_rank[j]['bonus2'] - parseInt(localStorage.getItem('wsn_bonus2'))) + '做种积分<br>', 1, item);
+                            }
+                        } else {
+                            vender_list('获取做种积分失败<br>', 1, item);
+                        }
+                    } else if (site_name === 'hdvideo.one') {
+                        if (parseInt(localStorage.getItem('hvo_bonus2')) > 0) {
+                            if (parseInt(localStorage.getItem('hvo_bonus2')) < site_rank[j]['bonus2']) {
+                                vender_list('升级还差' + (site_rank[j]['bonus2'] - parseInt(localStorage.getItem('hvo_bonus2'))) + '做种积分<br>', 1, item);
+                            }
+                        } else {
+                            vender_list('获取做种积分失败<br>', 1, item);
+                        }
                     }
                 }
                 if (typeof site_rank[j]['bonus3'] !== 'undefined') {
@@ -823,15 +879,6 @@ function renderRank() {
                         }
                     } else {
                         vender_list('获取成就积分失败<br>', 1, item);
-                    }
-                }
-                if (typeof site_rank[j]['bonus4'] !== 'undefined') {
-                    if (parseInt(localStorage.getItem('wsn_bonus2')) > 0) {
-                        if (parseInt(localStorage.getItem('wsn_bonus2')) < site_rank[j]['bonus4']) {
-                            vender_list('升级还差' + (site_rank[j]['bonus4'] - parseInt(localStorage.getItem('wsn_bonus2'))) + '做种积分<br>', 1, item);
-                        }
-                    } else {
-                        vender_list('获取做种积分失败<br>', 1, item);
                     }
                 }
                 if (rank_flag) {
@@ -881,27 +928,39 @@ function renderRank() {
                     }
                 }
                 if (typeof site_rank[j]['bonus2'] !== 'undefined') {
-                    if (parseInt(localStorage.getItem('ssd_bonus2')) > 0) {
-                        if (parseInt(localStorage.getItem('ssd_bonus2')) < site_rank[j]['bonus2']) {
-                            vender_list(site_rank[j]['bonus2'] + '做种积分', 3, item);
-                            vender_list('&nbsp;&nbsp;升级还差' + (site_rank[j]['bonus2'] - parseInt(localStorage.getItem('ssd_bonus2'))) + '做种积分<br>', 1, item);
+                    if (site_name === 'springsunday.net') {
+                        if (parseInt(localStorage.getItem('ssd_bonus2')) > 0) {
+                            if (parseInt(localStorage.getItem('ssd_bonus2')) < site_rank[j]['bonus2']) {
+                                vender_list(site_rank[j]['bonus2'] + '做种积分', 3, item);
+                                vender_list('&nbsp;&nbsp;升级还差' + (site_rank[j]['bonus2'] - parseInt(localStorage.getItem('ssd_bonus2'))) + '做种积分<br>', 1, item);
+                            } else {
+                                vender_list(site_rank[j]['bonus2'] + '做种积分', 2, item);
+                            }
                         } else {
-                            vender_list(site_rank[j]['bonus2'] + '做种积分', 2, item);
+                            vender_list('获取做种积分失败<br>', 1, item);
                         }
-                    } else {
-                        vender_list('获取做种积分失败<br>', 1, item);
-                    }
-                }
-                if (typeof site_rank[j]['bonus4'] !== 'undefined') {
-                    if (parseInt(localStorage.getItem('wsn_bonus2')) > 0) {
-                        if (parseInt(localStorage.getItem('wsn_bonus2')) < site_rank[j]['bonus4']) {
-                            vender_list(site_rank[j]['bonus4'] + '做种积分', 3, item);
-                            vender_list('&nbsp;&nbsp;升级还差' + (site_rank[j]['bonus4'] - parseInt(localStorage.getItem('wsn_bonus2'))) + '做种积分<br>', 1, item);
+                    } else if (site_name === 'wintersakura.net') {
+                        if (parseInt(localStorage.getItem('wsn_bonus2')) > 0) {
+                            if (parseInt(localStorage.getItem('wsn_bonus2')) < site_rank[j]['bonus2']) {
+                                vender_list(site_rank[j]['bonus2'] + '做种积分', 3, item);
+                                vender_list('&nbsp;&nbsp;升级还差' + (site_rank[j]['bonus2'] - parseInt(localStorage.getItem('wsn_bonus2'))) + '做种积分<br>', 1, item);
+                            } else {
+                                vender_list(site_rank[j]['bonus2'] + '做种积分', 2, item);
+                            }
                         } else {
-                            vender_list(site_rank[j]['bonus4'] + '做种积分', 2, item);
+                            vender_list('获取做种积分失败<br>', 1, item);
                         }
-                    } else {
-                        vender_list('获取做种积分失败<br>', 1, item);
+                    } else if (site_name === 'hdvideo.one') {
+                        if (parseInt(localStorage.getItem('hvo_bonus2')) > 0) {
+                            if (parseInt(localStorage.getItem('hvo_bonus2')) < site_rank[j]['bonus2']) {
+                                vender_list(site_rank[j]['bonus2'] + '做种积分', 3, item);
+                                vender_list('&nbsp;&nbsp;升级还差' + (site_rank[j]['bonus2'] - parseInt(localStorage.getItem('hvo_bonus2'))) + '做种积分<br>', 1, item);
+                            } else {
+                                vender_list(site_rank[j]['bonus2'] + '做种积分', 2, item);
+                            }
+                        } else {
+                            vender_list('获取做种积分失败<br>', 1, item);
+                        }
                     }
                 }
                 break;
@@ -956,14 +1015,14 @@ function renderRank() {
 
             if (typeof site_rank[j]['bonus2'] !== 'undefined') {
                 mouseover_content += '做种积分' + site_rank[j]['bonus2'] + '&nbsp;/&nbsp;';
-                bonus = parseInt(localStorage.getItem('ssd_bonus2'));
+                if (site_name === 'springsunday.net') {
+                    bonus = parseInt(localStorage.getItem('ssd_bonus2'));
+                } else if (site_name === 'wintersakura.net') {
+                    bonus = parseInt(localStorage.getItem('wsn_bonus2'));
+                } else if (site_name === 'hdvideo.one') {
+                    bonus = parseInt(localStorage.getItem('hvo_bonus2'));
+                }
                 need_bonus = site_rank[j]['bonus2'];
-            }
-
-            if (typeof site_rank[j]['bonus4'] !== 'undefined') {
-                mouseover_content += '做种积分' + site_rank[j]['bonus4'] + '&nbsp;/&nbsp;';
-                bonus = parseInt(localStorage.getItem('wsn_bonus2'));
-                need_bonus = site_rank[j]['bonus4'];
             }
 
             if (need_bonus > 0) {
@@ -1471,9 +1530,10 @@ function getSiteRank(site_url) {
     let siteConfig = getSiteConfig();
     let config = siteConfig[site_url];
     if (config !== undefined && config.ranks !== undefined) {
-        return config.ranks;
+        config.name = site_url;
+        return config;
     }
-    return [];
+    return undefined;
 }
 
 function getSiteConfig() {
@@ -4767,7 +4827,7 @@ function getSiteConfig() {
                     'time': 0,
                     'download': size2Bytes('50 GiB'),
                     'ratio': 1.00,
-                    'bonus4': 50000,
+                    'bonus2': 50000,
                     'privilege': '可以查看NFO文档；可以请求续种； 可以购买/发送邀请；可以删除自己上传的字幕。可以申请友情链接；可以使用个性条。'
                 },
                 {
@@ -4775,7 +4835,7 @@ function getSiteConfig() {
                     'time': 0,
                     'download': size2Bytes('400 GiB'),
                     'ratio': 1.50,
-                    'bonus4': 120000,
+                    'bonus2': 120000,
                     'privilege': '可以查看种子结构；可以更新外部信息',
                 },
                 {
@@ -4783,7 +4843,7 @@ function getSiteConfig() {
                     'time': 0,
                     'download': size2Bytes('800 GiB'),
                     'ratio': 2.00,
-                    'bonus4': 200000,
+                    'bonus2': 200000,
                     'privilege': '可以在做种/下载/发布的时候选择匿名模式。'
                 },
                 {
@@ -4791,7 +4851,7 @@ function getSiteConfig() {
                     'time': 0,
                     'download': size2Bytes('1.5 TiB'),
                     'ratio': 3.00,
-                    'bonus4': 500000,
+                    'bonus2': 500000,
                     'privilege': '可以查看排行榜。'
                 },
                 {
@@ -4799,7 +4859,7 @@ function getSiteConfig() {
                     'time': 0,
                     'download': size2Bytes('3 TiB'),
                     'ratio': 4.00,
-                    'bonus4': 800000,
+                    'bonus2': 800000,
                     'privilege': '可以查看其它用户种子历史。（只有用户的隐私等级没有设为‘强’时才生效）'
                 },
                 {
@@ -4807,7 +4867,7 @@ function getSiteConfig() {
                     'time': 0,
                     'download': size2Bytes('5 TiB'),
                     'ratio': 6.00,
-                    'bonus4': 1400000,
+                    'bonus2': 1400000,
                     'privilege': '可以更新过期的外部信息。<span style="color:green">封存账号后不会被删除</span>'
                 },
                 {
@@ -4815,7 +4875,7 @@ function getSiteConfig() {
                     'time': 0,
                     'download': size2Bytes('6 TiB'),
                     'ratio': 8.00,
-                    'bonus4': 2000000,
+                    'bonus2': 2000000,
                     'privilege': ''
                 },
                 {
@@ -4823,7 +4883,7 @@ function getSiteConfig() {
                     'time': 0,
                     'download': size2Bytes('10 TiB'),
                     'ratio': 9.50,
-                    'bonus4': 2800000,
+                    'bonus2': 2800000,
                     'privilege': '<span style="color:green">永远保留账号</span>'
                 },
             ]
@@ -4835,6 +4895,7 @@ function getSiteConfig() {
                     'time': 4 * 7 * 86400,
                     'download': size2Bytes('128 GiB'),
                     'ratio': 2.00,
+                    'bonus2': 60480,
                     'privilege': '可以直接发布种子；可以查看NFO文档；可以查看用户列表；可以请求续种； 可以发送邀请； 可以查看排行榜；可以查看其它用户的种子历史(如果用户隐私等级未设置为"强")； 可以删除自己上传的字幕。'
                 },
                 {
@@ -4842,6 +4903,7 @@ function getSiteConfig() {
                     'time': 8 * 7 * 86400,
                     'download': size2Bytes('256 GiB'),
                     'ratio': 2.50,
+                    'bonus2': 127680,
                     'privilege': '<span style="color:green">封存账号后不会被删除</span>'
                 },
                 {
@@ -4849,6 +4911,7 @@ function getSiteConfig() {
                     'time': 12 * 7 * 86400,
                     'download': size2Bytes('512 GiB'),
                     'ratio': 3.00,
+                    'bonus2': 191520,
                     'privilege': '可以在做种/下载/发布的时候选择匿名模式'
                 },
                 {
@@ -4856,6 +4919,7 @@ function getSiteConfig() {
                     'time': 18 * 7 * 86400,
                     'download': size2Bytes('1 TiB'),
                     'ratio': 3.50,
+                    'bonus2': 317520,
                     'privilege': '可以查看普通日志'
                 },
                 {
@@ -4863,6 +4927,7 @@ function getSiteConfig() {
                     'time': 24 * 7 * 86400,
                     'download': size2Bytes('2 TiB'),
                     'ratio': 4.00,
+                    'bonus2': 423360,
                     'privilege': '可以查看其它用户的评论、帖子历史；<span style="color:green">永远保留账号</span>'
                 },
                 {
@@ -4870,6 +4935,7 @@ function getSiteConfig() {
                     'time': 32 * 7 * 86400,
                     'download': size2Bytes('4 TiB'),
                     'ratio': 4.50,
+                    'bonus2': 575232,
                     'privilege': '可以更新过期的外部信息；可以查看Extreme User论坛'
                 },
                 {
@@ -4877,6 +4943,7 @@ function getSiteConfig() {
                     'time': 40 * 7 * 86400,
                     'download': size2Bytes('6 TiB'),
                     'ratio': 5.00,
+                    'bonus2': 719040,
                     'privilege': ''
                 },
                 {
@@ -4884,7 +4951,68 @@ function getSiteConfig() {
                     'time': 52 * 7 * 86400,
                     'download': size2Bytes('8 TiB'),
                     'ratio': 5.50,
+                    'bonus2': 934752,
                     'privilege': ''
+                },
+            ]
+        },
+        "haidan.video": {
+            ranks: [
+                {
+                    'name': 'Power User',
+                    'time': 2 * 7 * 86400,
+                    'download': size2Bytes('0 GiB'),
+                    'ratio': 1.00,
+                    'privilege': '允许购买邀请码，可以直接发布种子，可以删除自己上传的字幕。'
+                },
+                {
+                    'name': 'Elite User',
+                    'time': 4 * 7 * 86400,
+                    'download': size2Bytes('0 GiB'),
+                    'ratio': 1.00,
+                    'privilege': '允许发送邀请码'
+                },
+                {
+                    'name': 'Crazy User',
+                    'time': 8 * 7 * 86400,
+                    'download': size2Bytes('0 GiB'),
+                    'ratio': 1.00,
+                    'privilege': '查看种子结构'
+                },
+                {
+                    'name': 'Insane User',
+                    'time': 16 * 7 * 86400,
+                    'download': size2Bytes('0 GiB'),
+                    'ratio': 1.00,
+                    'privilege': '发布趣味盒'
+                },
+                {
+                    'name': 'Veteran User',
+                    'time': 28 * 7 * 86400,
+                    'download': size2Bytes('0 GiB'),
+                    'ratio': 1.00,
+                    'privilege': '<span style="color:green">永远保留账号</span>'
+                },
+                {
+                    'name': 'Extreme User',
+                    'time': 32 * 7 * 86400,
+                    'download': size2Bytes('0 GiB'),
+                    'ratio': 1.00,
+                    'privilege': '查看日志权限'
+                },
+                {
+                    'name': 'Ultimate User',
+                    'time': 40 * 7 * 86400,
+                    'download': size2Bytes('0 GiB'),
+                    'ratio': 1.00,
+                    'privilege': '查看排行榜'
+                },
+                {
+                    'name': 'Nexus Master',
+                    'time': 52 * 7 * 86400,
+                    'download': size2Bytes('0 GiB'),
+                    'ratio': 1.00,
+                    'privilege': '允许匿名，拥有发布主题推荐权限'
                 },
             ]
         }
