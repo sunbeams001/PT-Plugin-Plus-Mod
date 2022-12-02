@@ -1577,13 +1577,26 @@ function getCheckInConfig(site_url) {
             url = 'https://1ptba.com/attendance.php';
             break;
         case 'wintersakura.net' :
-            url = 'https://wintersakura.net/attendance.php';
-            // callback = function (item2) {
-            //     window.open("https://wintersakura.net/attendance.php", "_blank");
-            // };
+            // url = 'https://wintersakura.net/attendance.php';
+            callback = function (item2) {
+                window.open("https://wintersakura.net/attendance.php", "_blank");
+                var check_in = localStorage.getItem('check_in');
+                if (check_in === null) {
+                    check_in = {};
+                } else {
+                    check_in = JSON.parse(check_in);
+                }
+                check_in.wintersakura_net = (new Date().getMonth() + 1) + '' + new Date().getDate();
+                localStorage.setItem('check_in', JSON.stringify(check_in));
+                check_in_list.remove('wintersakura_net');
+                item2.find('.caption').after('<span style="color:green;">✔</span>');
+            };
             break;
         case 'hdvideo.one' :
             url = 'https://hdvideo.one/attendance.php';
+            break;
+        case 'hdtime.org' :
+            url = 'https://hdtime.org/attendance.php';
             break;
     }
     return {url: url, callback: callback};
