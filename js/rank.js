@@ -916,10 +916,10 @@ function renderRank() {
                     if (site_name === 'haidan.video') {
                         if (parseInt(localStorage.getItem('hdv_bonus2')) > 0) {
                             if (parseInt(localStorage.getItem('hdv_bonus2')) < site_rank[j]['bonus4']) {
-                                vender_list('升级还差' + (site_rank[j]['bonus4'] - parseInt(localStorage.getItem('hdv_bonus2'))) + '做种积分<br>', 1, item);
+                                vender_list('升级还差' + (site_rank[j]['bonus4'] - parseInt(localStorage.getItem('hdv_bonus2'))) + '等级积分<br>', 1, item);
                             }
                         } else {
-                            vender_list('获取做种积分失败<br>', 1, item);
+                            vender_list('获取等级积分失败<br>', 1, item);
                         }
                     }
                 }
@@ -1009,13 +1009,13 @@ function renderRank() {
                     if (site_name === 'haidan.video') {
                         if (parseInt(localStorage.getItem('hdv_bonus2')) > 0) {
                             if (parseInt(localStorage.getItem('hdv_bonus2')) < site_rank[j]['bonus4']) {
-                                vender_list(site_rank[j]['bonus4'] + '做种积分', 3, item);
-                                vender_list('&nbsp;&nbsp;升级还差' + (site_rank[j]['bonus4'] - parseInt(localStorage.getItem('hdv_bonus2'))) + '做种积分<br>', 1, item);
+                                vender_list(site_rank[j]['bonus4'] + '等级积分', 3, item);
+                                vender_list('&nbsp;&nbsp;升级还差' + (site_rank[j]['bonus4'] - parseInt(localStorage.getItem('hdv_bonus2'))) + '等级积分<br>', 1, item);
                             } else {
-                                vender_list(site_rank[j]['bonus4'] + '做种积分', 2, item);
+                                vender_list(site_rank[j]['bonus4'] + '等级积分', 2, item);
                             }
                         } else {
-                            vender_list('获取做种积分失败<br>', 1, item);
+                            vender_list('获取等级积分失败<br>', 1, item);
                         }
                     }
                 }
