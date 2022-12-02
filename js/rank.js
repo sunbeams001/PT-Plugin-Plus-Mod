@@ -2649,28 +2649,28 @@ function getSiteConfig() {
                 },
                 {
                     'name': 'Veteran User',
-                    'time': 40 * 7 * 86400,
+                    'time': 52 * 7 * 86400,
                     'download': size2Bytes('8192 GiB'),
                     'ratio': 3.05,
                     'privilege': '可以查看其它用户的评论、帖子历史；<span style="color:green">永远保留账号</span>'
                 },
                 {
                     'name': 'Extreme User',
-                    'time': 60 * 7 * 86400,
+                    'time': 80 * 7 * 86400,
                     'download': size2Bytes('16384 GiB'),
                     'ratio': 3.55,
                     'privilege': '可以更新过期的外部信息；可以查看Extreme User论坛'
                 },
                 {
                     'name': 'Ultimate User',
-                    'time': 80 * 7 * 86400,
+                    'time': 104 * 7 * 86400,
                     'download': size2Bytes('35000 GiB'),
                     'ratio': 4.05,
                     'privilege': ''
                 },
                 {
                     'name': 'Nexus Master',
-                    'time': 100 * 7 * 86400,
+                    'time': 130 * 7 * 86400,
                     'download': size2Bytes('70000 GiB'),
                     'ratio': 4.55,
                     'privilege': ''
