@@ -1,6 +1,6 @@
 var rank_timer = setInterval(function () {
     if ($('tr .center').length > 0) {
-        renderRank();
+        //renderRank();
         getCheckInStatus();
         $('a[href="#/statistic"]').after('<button title="升级日历" id="calendar_button" class="v-btn v-btn--router theme--light success" title=""><div class="v-btn__content"><i aria-hidden="true" class="v-icon material-icons theme--light">today</i></div></button>')
         $('#calendar_button').on('click', function () {
