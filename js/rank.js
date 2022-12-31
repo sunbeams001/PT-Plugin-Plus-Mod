@@ -1598,6 +1598,9 @@ function getCheckInConfig(site_url) {
         case 'hdtime.org' :
             url = 'https://hdtime.org/attendance.php';
             break;
+        case 'piggo.me' :
+            url = 'https://piggo.me/attendance.php';
+            break;
     }
     return {url: url, callback: callback};
 }
