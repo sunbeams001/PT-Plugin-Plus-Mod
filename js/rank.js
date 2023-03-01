@@ -1601,6 +1601,8 @@ function getCheckInConfig(site_url) {
         case 'piggo.me' :
             url = 'https://piggo.me/attendance.php';
             break;
+        case 'hhanclub.top' :
+            url = 'https://hhanclub.top/attendance.php';
     }
     return {url: url, callback: callback};
 }
