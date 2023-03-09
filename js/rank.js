@@ -1603,6 +1603,8 @@ function getCheckInConfig(site_url) {
             break;
         case 'hhanclub.top' :
             url = 'https://hhanclub.top/attendance.php';
+        case 'audiences.me' :
+            url = 'https://audiences.me/attendance.php';
     }
     return {url: url, callback: callback};
 }
