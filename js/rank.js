@@ -1599,7 +1599,20 @@ function getCheckInConfig(site_url) {
             url = 'https://hdtime.org/attendance.php';
             break;
         case 'piggo.me' :
-            url = 'https://piggo.me/attendance.php';
+            // url = 'https://piggo.me/attendance.php';
+            callback = function (item2) {
+                window.open("https://piggo.me/attendance.php", "_blank");
+                var check_in = localStorage.getItem('check_in');
+                if (check_in === null) {
+                    check_in = {};
+                } else {
+                    check_in = JSON.parse(check_in);
+                }
+                check_in.piggo_me = (new Date().getMonth() + 1) + '' + new Date().getDate();
+                localStorage.setItem('check_in', JSON.stringify(check_in));
+                check_in_list.remove('piggo_me');
+                item2.find('.caption').after('<span style="color:green;">✔</span>');
+            };
             break;
         case 'hhanclub.top' :
             url = 'https://hhanclub.top/attendance.php';
